@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732212.png",
+        "pergunta": "Qual tag HTML é usada para criar um link?",
+        "respostas": [
+            "<link>",
+            "<a>",
+            "<href>",
+            "<url>"
+        ],
+        "correta": 2
+    },
+    {
+        "id": 2,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732190.png",
+        "pergunta": "Qual propriedade CSS é usada para mudar a cor do texto?",
+        "respostas": [
+            "text-color",
+            "font-color",
+            "color",
+            "text-style"
+        ],
+        "correta": 3
+    },
+    {
+        "id": 3,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/5968/5968292.png",
+        "pergunta": "Como se escreve uma mensagem de alerta em JavaScript?",
+        "respostas": [
+            "msg('Olá')",
+            "alert('Olá')",
+            "console.log('Olá')",
+            "popup('Olá')"
+        ],
+        "correta": 2
+    },
+    {
+        "id": 4,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732212.png",
+        "pergunta": "Qual tag HTML é usada para inserir uma imagem?",
+        "respostas": [
+            "<img>",
+            "📷",
+            "<pic>",
+            "<src>"
+        ],
+        "correta": 1
+    },
+    {
+        "id": 5,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732190.png",
+        "pergunta": "Qual propriedade CSS define o tamanho da fonte?",
+        "respostas": [
+            "text-size",
+            "font-size",
+            "size",
+            "font-style"
+        ],
+        "correta": 2
+    },
+    {
+        "id": 6,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/5968/5968292.png",
+        "pergunta": "Qual símbolo é usado para comentários em JavaScript de uma linha?",
+        "respostas": [
+            "<!-- -->",
+            "/* */",
+            "//",
+            "#"
+        ],
+        "correta": 3
+    },
+    {
+        "id": 7,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732212.png",
+        "pergunta": "Qual tag HTML cria uma lista não ordenada?",
+        "respostas": [
+            "<ol>",
+            "<ul>",
+            "<li>",
+            "<list>"
+        ],
+        "correta": 2
+    },
+    {
+        "id": 8,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/5968/5968292.png",
+        "pergunta": "Como declarar uma variável em JavaScript?",
+        "respostas": [
+            "v myVar;",
+            "variable myVar;",
+            "let myVar;",
+            "myVar = var;"
+        ],
+        "correta": 3
+    },
+    {
+        "id": 9,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732190.png",
+        "pergunta": "Qual propriedade CSS adiciona espaçamento interno dentro de um elemento?",
+        "respostas": [
+            "margin",
+            "border",
+            "spacing",
+            "padding"
+        ],
+        "correta": 4
+    },
+    {
+        "id": 10,
+        "ilustracao": "https://cdn-icons-png.flaticon.com/512/732/732212.png",
+        "pergunta": "Qual tag HTML é usada para o título principal (mais importante) de uma página?",
+        "respostas": [
+            "<h6>",
+            "<head>",
+            "<h1>",
+            "<title>"
+        ],
+        "correta": 3
+    }
+]
