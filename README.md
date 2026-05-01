@@ -40,6 +40,6 @@ flutter run
 
 | Splash | Quiz | Resultado |
 |--------|------|-----------|
-| ![Splash](./assets/screens/screen1.png) | ![Quiz](./assets/screens/screen2.png) | ![Resultado](./assets/screens/screen3.png) |
+| ![Splash](./flutter_quiz_2026/assets/screens/screen1.png) | ![Quiz](./flutter_quiz_2026/assets/screens/screen2.png) | ![Resultado](./flutter_quiz_2026/assets/screens/screen3.png) |
 
 </div>
