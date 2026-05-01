@@ -35,7 +35,7 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Quiz Dev")),
+      appBar: AppBar(title: const Text("Quiz Flutter Dev")),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
