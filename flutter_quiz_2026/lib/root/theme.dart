@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'pallet.dart';
 
 abstract class AppTheme {
-  static ThemeData appTeme = ThemeData.light().copyWith(
+  static ThemeData appTheme = ThemeData.light().copyWith(
     scaffoldBackgroundColor: AppColors.p1,
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.p4,
       iconTheme: IconThemeData(color: AppColors.p1),
       titleTextStyle: TextStyle(
@@ -13,7 +13,7 @@ abstract class AppTheme {
         fontSize: 20,
       ),
     ),
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       titleMedium: TextStyle(
         color: AppColors.p4,
         fontSize: 18,
@@ -24,14 +24,17 @@ abstract class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: WidgetStatePropertyAll(AppColors.p1),
+        foregroundColor: const WidgetStatePropertyAll(AppColors.p1),
         backgroundColor: WidgetStateProperty.fromMap({
           WidgetState.pressed: AppColors.p4,
           WidgetState.hovered: AppColors.p2,
           WidgetState.disabled: AppColors.t1,
           WidgetState.any: AppColors.p3,
         }),
-        elevation: WidgetStatePropertyAll(8.0),
+        elevation: const WidgetStatePropertyAll(8.0),
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        ),
       ),
     ),
     canvasColor: AppColors.p2,

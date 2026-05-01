@@ -1,150 +1,170 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_quiz_2026/root/pallet.dart';
+import '../root/pallet.dart';
+import 'resultado.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final String nomeParticipante;
+  const Home({super.key, required this.nomeParticipante});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  List<dynamic> produtos = [];
-  int indice = 0;
-
-  ValueChanged<dynamic>? get onChanged => null;
+  List<dynamic> perguntas = [];
+  int indicePergunta = 0;
+  int? respostaSelecionada;
+  bool respondido = false;
+  int acertos = 0;
 
   @override
   void initState() {
     super.initState();
-    carrearMockupJSON();
+    _carregarPerguntas();
   }
 
-  Future<void> carrearMockupJSON() async {
-    String dados = await rootBundle.loadString('assets/mockup/produtos.json');
+  Future<void> _carregarPerguntas() async {
+    final dados = await rootBundle.loadString('assets/mockup/questionario.json');
+    setState(() => perguntas = json.decode(dados));
+  }
+
+  void _responder() {
+    if (respostaSelecionada == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Selecione uma alternativa!")),
+      );
+      return;
+    }
+    final correta = perguntas[indicePergunta]['correta'] as int;
     setState(() {
-      produtos = json.decode(dados);
+      respondido = true;
+      if (respostaSelecionada == correta) acertos++;
     });
+  }
+
+  void _proximaPergunta() {
+    if (indicePergunta < perguntas.length - 1) {
+      setState(() {
+        indicePergunta++;
+        respostaSelecionada = null;
+        respondido = false;
+      });
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => Resultado(
+            nomeParticipante: widget.nomeParticipante,
+            acertos: acertos,
+            total: perguntas.length,
+          ),
+        ),
+      );
+    }
+  }
+
+  Color _corAlternativa(int index) {
+    if (!respondido) return Colors.transparent;
+    final correta = perguntas[indicePergunta]['correta'] as int;
+    if (index == correta) return AppColors.acerto.withOpacity(0.2);
+    if (index == respostaSelecionada) return AppColors.erro.withOpacity(0.2);
+    return Colors.transparent;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (perguntas.isEmpty) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final pergunta = perguntas[indicePergunta];
+    final respostas = pergunta['respostas'] as List<dynamic>;
+    final correta = pergunta['correta'] as int;
+    final total = perguntas.length;
+
     return Scaffold(
-      appBar: AppBar(title: Text("Papelaria produtos")),
-      body: Center(
+      appBar: AppBar(
+        title: Text(pergunta['tema'] ?? "Quiz Flutter Dev"),
+        automaticallyImplyLeading: false,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 20,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 16,
           children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: AppColors.p1,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.p2,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: DropdownButton<dynamic>(
-                borderRadius: BorderRadius.circular(8),
-                isExpanded: true,
-                underline: const SizedBox.shrink(),
-                value: produtos.isNotEmpty ? produtos[indice] : null,
-                items: produtos
-                    .map(
-                      (produto) => DropdownMenuItem<dynamic>(
-                        value: produto,
-                        child: Text(produto['nome']),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    indice = produtos.indexOf(value);
-                  });
-                },
-              ),
-            ),
             Text(
-              produtos.isNotEmpty
-                  ? produtos[indice]['nome']
-                  : "Nome do produto",
-              style: Theme.of(context).textTheme.titleMedium,
+              "Questão nº ${indicePergunta + 1}",
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.p4,
+              ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.p2,
-                    blurRadius: 8,
-                    offset: Offset(0, 4),
+
+            ClipRRect(
+              borderRadius: BorderRadius.circular(60),
+              child: Image.network(
+                pergunta['ilustracao'],
+                height: 90,
+                width: 90,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.image_not_supported, size: 60, color: AppColors.p2),
+              ),
+            ),
+
+            Text(
+              pergunta['pergunta'],
+              style: const TextStyle(fontSize: 15, color: AppColors.p4),
+              textAlign: TextAlign.center,
+            ),
+
+            Column(
+              children: List.generate(respostas.length, (i) {
+                final numero = i + 1;
+                return Container(
+                  color: _corAlternativa(numero),
+                  child: RadioListTile<int>(
+                    value: numero,
+                    groupValue: respostaSelecionada,
+                    onChanged: respondido
+                        ? null
+                        : (val) => setState(() => respostaSelecionada = val),
+                    title: Text(
+                      respostas[i].toString(),
+                      style: const TextStyle(color: AppColors.p4),
+                    ),
+                    activeColor: AppColors.p3,
+                    secondary: respondido
+                        ? (numero == correta
+                            ? const Icon(Icons.check_circle, color: AppColors.acerto)
+                            : (numero == respostaSelecionada
+                                ? const Icon(Icons.cancel, color: AppColors.erro)
+                                : null))
+                        : null,
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  spacing: 10,
-                  children: [
-                    produtos.isNotEmpty
-                        ? Image.network(
-                            produtos[indice]['img'],
-                            width: 200,
-                            errorBuilder:
-                                (
-                                  BuildContext context,
-                                  Object exception,
-                                  StackTrace? stackTrace,
-                                ) =>
-                                    Image.asset('assets/icone.png', width: 200),
-                          )
-                        : Image.asset(
-                            'assets/icone.png',
-                            height: 200,
-                            width: 200,
-                          ),
-                    Text(
-                      produtos.isNotEmpty
-                          ? produtos[indice]['descricao']
-                          : "Descrição do produto",
-                    ),
-                    Text(
-                      produtos.isNotEmpty
-                          ? "R\$ ${produtos[indice]['preco'].toStringAsFixed(2).replaceAll('.', ',')}"
-                          : "R\$ 0.00",
-                    ),
-                  ],
-                ),
-              ),
+                );
+              }),
             ),
+
+            const Spacer(),
+
+            // Botões
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: indice > 0
-                      ? () => setState(() {
-                          indice--;
-                        })
-                      : null,
-                  child: Text("Anterior"),
+                  onPressed: respondido ? null : _responder,
+                  child: const Text("Responder"),
                 ),
                 ElevatedButton(
-                  onPressed: indice < produtos.length - 1
-                      ? () => setState(() {
-                          indice++;
-                        })
-                      : null,
-                  child: Text("Proximo"),
+                  onPressed: respondido ? _proximaPergunta : null,
+                  child: Text(
+                    indicePergunta < total - 1 ? "Próxima questão" : "Ver resultado",
+                  ),
                 ),
               ],
             ),

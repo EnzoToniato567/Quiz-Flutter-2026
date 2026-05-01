@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../root/pallet.dart';
 import 'home.dart';
 
 class Splash extends StatefulWidget {
@@ -8,83 +9,64 @@ class Splash extends StatefulWidget {
   State<Splash> createState() => _SplashState();
 }
 
-class _SplashState extends State<Splash> with TickerProviderStateMixin {
-  late AnimationController _vertical, _horizontal;
-  double _x = 0, _y = -500;
-
-  @override
-  void initState() {
-    super.initState();
-    movimentos();
-    entrada();
-  }
-
-  void movimentos() {
-    _vertical =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 800))
-          ..addListener(() {
-            setState(() {
-              _y = _vertical.value * 500 - 500;
-            });
-          });
-
-    _horizontal =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 800))
-          ..addListener(() {
-            setState(() {
-              _x = _horizontal.value * 300;
-            });
-          });
-  }
-
-  void resetAnimation() {
-    _horizontal.reset();
-    _vertical.reset();
-    setState(() {
-      _x = 0;
-      _y = -500;
-    });
-  }
-
-  void entrada() {
-    _vertical.forward();
-  }
-
-  void saida() {
-    _horizontal.forward().then((value) => irParaHome());
-  }
-
-  void irParaHome() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Home()),
-    );
-    resetAnimation();
-    entrada();
-  }
+class _SplashState extends State<Splash> {
+  final TextEditingController _nomeController = TextEditingController();
 
   @override
   void dispose() {
+    _nomeController.dispose();
     super.dispose();
-    _vertical.dispose();
-    _horizontal.dispose();
+  }
+
+  void _iniciar() {
+    final nome = _nomeController.text.trim();
+    if (nome.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Digite seu nome para continuar!")),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => Home(nomeParticipante: nome)),
+    ).then((_) => _nomeController.clear());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Papelaria produtos")),
+      appBar: AppBar(title: const Text("Quiz Dev")),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 40,
-          children: [
-            Transform.translate(
-              offset: Offset(_x, _y),
-              child: Image.asset('assets/icone.png', width: 150),
-            ),
-            ElevatedButton(onPressed: saida, child: Text("Entrar")),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 24,
+            children: [
+              const Icon(Icons.quiz, size: 80, color: AppColors.p3),
+              const Text(
+                "Bem-vindo ao Quiz!",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.p4,
+                ),
+              ),
+              TextField(
+                controller: _nomeController,
+                decoration: const InputDecoration(
+                  hintText: "Digite seu nome",
+                  prefixIcon: Icon(Icons.person, color: AppColors.p3),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: _iniciar,
+                icon: const Icon(Icons.play_arrow),
+                label: const Text("Iniciar Quiz"),
+              ),
+            ],
+          ),
         ),
       ),
     );
